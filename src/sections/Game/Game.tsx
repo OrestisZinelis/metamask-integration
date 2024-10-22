@@ -13,14 +13,12 @@ import { ProvablyFairModal } from './ProvablyFairModal'
 
 function CustomError() {
   return (
-    <>
-      <GambaUi.Portal target="error">
-        <GambaUi.Responsive>
-          <h1>😭 Oh no!</h1>
-          <p>Something went wrong</p>
-        </GambaUi.Responsive>
-      </GambaUi.Portal>
-    </>
+    <GambaUi.Portal target="error">
+      <GambaUi.Responsive>
+        <h1>😭 Oh no!</h1>
+        <p>Something went wrong</p>
+      </GambaUi.Responsive>
+    </GambaUi.Portal>
   )
 }
 
