@@ -16,19 +16,13 @@ function ConnectedButton() {
     <>
       {modal && (
         <Modal onClose={() => setModal(false)}>
-          <h1>
-            {truncateString(address.toBase58(), 6, 3)}
-          </h1>
-          <GambaUi.Button onClick={() => wallet.disconnect()}>
-            Disconnect
-          </GambaUi.Button>
+          <h1>{truncateString(address.toBase58(), 6, 3)}</h1>
+          <GambaUi.Button onClick={() => wallet.disconnect()}>Disconnect</GambaUi.Button>
         </Modal>
       )}
       <div style={{ position: 'relative' }} ref={ref}>
-        <GambaUi.Button
-          onClick={() => setModal(true)}
-        >
-          <div style={{display: 'flex', gap: '.5em', alignItems: 'center'}}>
+        <GambaUi.Button onClick={() => setModal(true)}>
+          <div style={{ display: 'flex', gap: '.5em', alignItems: 'center' }}>
             <img src={wallet.wallet?.adapter.icon} height="20px" />
             {truncateString(address.toBase58(), 3)}
           </div>
@@ -38,7 +32,7 @@ function ConnectedButton() {
   )
 }
 
-export function UserButton() {
+export function SolButton() {
   const walletModal = useWalletModal()
   const wallet = useWallet()
 
@@ -52,10 +46,10 @@ export function UserButton() {
 
   return (
     <>
-      {wallet.connected ? <ConnectedButton /> : (
-        <GambaUi.Button onClick={connect}>
-          {wallet.connecting ? 'Connecting' : 'Connect'}
-        </GambaUi.Button>
+      {wallet.connected ? (
+        <ConnectedButton />
+      ) : (
+        <GambaUi.Button onClick={connect}>{wallet.connecting ? 'Connecting' : 'Connect'}</GambaUi.Button>
       )}
     </>
   )

@@ -8,52 +8,62 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App'
-import { DEFAULT_POOL, PLATFORM_CREATOR_ADDRESS, PLATFORM_CREATOR_FEE, PLATFORM_JACKPOT_FEE, RPC_ENDPOINT, TOKEN_METADATA, TOKEN_METADATA_FETCHER } from './constants'
+import {
+  DEFAULT_POOL,
+  PLATFORM_CREATOR_ADDRESS,
+  PLATFORM_CREATOR_FEE,
+  PLATFORM_JACKPOT_FEE,
+  RPC_ENDPOINT,
+  TOKEN_METADATA,
+  TOKEN_METADATA_FETCHER
+} from './constants'
 import './styles.css'
+import { MetaMaskProvider } from '@metamask/sdk-react'
 
 const root = ReactDOM.createRoot(document.getElementById('root')!)
 
 function Root() {
-  const wallets = React.useMemo(
-    () => [
-      new PhantomWalletAdapter(),
-      new SolflareWalletAdapter()
-    ],
-    [],
-  )
+  const wallets = React.useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter()], [])
 
   return (
     <BrowserRouter>
-      <ConnectionProvider
-        endpoint={RPC_ENDPOINT}
-        config={{ commitment: 'processed' }}
-      >
-        <WalletProvider autoConnect wallets={wallets}>
-          <WalletModalProvider>
-            <TokenMetaProvider
-              tokens={TOKEN_METADATA}
-              fetcher={TOKEN_METADATA_FETCHER}
-            >
-              <SendTransactionProvider priorityFee={400_201}>
-                <GambaProvider
-                  __experimental_plugins={[
-                    // Custom fee (1%)
-                    // createCustomFeePlugin('<SOLANA ADDRESS>', .01),
-                  ]}
-                >
-                  <GambaPlatformProvider
-                    creator={PLATFORM_CREATOR_ADDRESS}
-                    defaultCreatorFee={PLATFORM_CREATOR_FEE}
-                    defaultJackpotFee={PLATFORM_JACKPOT_FEE}
-                    defaultPool={DEFAULT_POOL}
+      <ConnectionProvider endpoint={RPC_ENDPOINT} config={{ commitment: 'processed' }}>
+        <MetaMaskProvider
+          debug={false}
+          sdkOptions={{
+            dappMetadata: {
+              name: 'Gamba',
+              url: window.location.href
+            },
+            infuraAPIKey: 'YOUR_INFURA_API_KEY'
+          }}
+        >
+          <WalletProvider autoConnect wallets={wallets}>
+            <WalletModalProvider>
+              <TokenMetaProvider tokens={TOKEN_METADATA} fetcher={TOKEN_METADATA_FETCHER}>
+                <SendTransactionProvider priorityFee={400_201}>
+                  <GambaProvider
+                    __experimental_plugins={
+                      [
+                        // Custom fee (1%)
+                        // createCustomFeePlugin('<SOLANA ADDRESS>', .01),
+                      ]
+                    }
                   >
-                    <App />
-                  </GambaPlatformProvider>
-                </GambaProvider>
-              </SendTransactionProvider>
-            </TokenMetaProvider>
-          </WalletModalProvider>
-        </WalletProvider>
+                    <GambaPlatformProvider
+                      creator={PLATFORM_CREATOR_ADDRESS}
+                      defaultCreatorFee={PLATFORM_CREATOR_FEE}
+                      defaultJackpotFee={PLATFORM_JACKPOT_FEE}
+                      defaultPool={DEFAULT_POOL}
+                    >
+                      <App />
+                    </GambaPlatformProvider>
+                  </GambaProvider>
+                </SendTransactionProvider>
+              </TokenMetaProvider>
+            </WalletModalProvider>
+          </WalletProvider>
+        </MetaMaskProvider>
       </ConnectionProvider>
     </BrowserRouter>
   )
